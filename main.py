@@ -1,5 +1,4 @@
 import logging
-import time
 
 from fastapi import FastAPI, Query, Response
 import requests
@@ -37,17 +36,28 @@ def get_crypto_price(crypto: str = Query(COIN_TYPE, description="Cryptocurrency 
     "vs_currencies": currency
     }
     start = time.time()
-    response = requests.get(BASE_URL, params=params)
-    response.raise_for_status()
-    data = response.json()
+    try:
+        response = requests.get(BASE_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to fetch price: {e}")
+        increase_site_api_error(BASE_URL)
+        return {"error": "Failed to fetch price"}
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        increase_site_api_error(BASE_URL)
+        return {"error": "Unexpected error"}
 
     if crypto not in data:
         increase_no_price(BASE_URL)
         record_latency(BASE_URL, COIN_TYPE, start)
+        logger.error(f"Price not found for '{crypto}'")
         return {"error": f"Price not found for '{crypto}'"}
 
     increase_request_count(BASE_URL, crypto)
     record_latency(BASE_URL, COIN_TYPE, start)
+    logger.info(f"Successfully fetched price for {crypto} from {BASE_URL}")
     return {"crypto": crypto, "price": data[crypto][currency.lower()]}
 
 @app.get("/metrics")
