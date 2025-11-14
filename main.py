@@ -1,6 +1,13 @@
+import logging
+
 from fastapi import FastAPI, Query
 import requests
 import os
+
+from logger import init_logger
+
+init_logger()
+logger = logging.getLogger()
 
 app = FastAPI()
 
@@ -8,7 +15,7 @@ supported_currencies = ["usd", "ils"]
 
 CURRENCY = os.getenv("CURRENCY", "usd").lower()
 if CURRENCY not in supported_currencies:
-    print("Non-supported currency, defaulting to USD") # TODO: Change to log
+    logger.warning("Non-supported currency, defaulting to USD")
     CURRENCY = "usd"
 
 BASE_URL = os.getenv("BASE_URL", f"https://api.coingecko.com/api/v3/simple/price")
@@ -28,5 +35,3 @@ def get_crypto_price(crypto: str = Query("bitcoin", description="Cryptocurrency 
         return {"error": f"Price not found for '{crypto}'"}
 
     return {"crypto": crypto, "price": data[crypto][currency.lower()]}
-
-print(get_crypto_price("bitcoin", "usd"))
