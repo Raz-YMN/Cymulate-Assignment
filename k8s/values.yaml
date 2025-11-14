@@ -177,6 +177,14 @@ namespace:
   name: test-crypto-price
   appLabel: crypto-price-app
 
+env:
+  - name: API_CURRENCY
+    value: usd
+  - name: API_COIN_TYPE
+    value: bitcoin
+  - name: BASE_URL
+    value: https://api.coingecko.com/api/v3/simple/price
+
 prometheus:
   prometheusSpec:
     serviceMonitorNamespaceSelector:
