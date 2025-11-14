@@ -176,3 +176,8 @@ namespace:
   create: true
   name: test-crypto-price
   appLabel: crypto-price-app
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorNamespaceSelector:
+      any: true

@@ -63,3 +63,7 @@ def get_crypto_price(crypto: str = Query(COIN_TYPE, description="Cryptocurrency 
 @app.get("/metrics")
 def metrics():
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
