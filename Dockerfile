@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 80
 
-ENTRYPOINT ["fastapi", "run", "main.py", "--port", "80"]
+ENTRYPOINT ["fastapi", "run", "main.py", "--port", "8000"]
