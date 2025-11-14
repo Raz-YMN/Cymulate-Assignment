@@ -13,12 +13,12 @@ app = FastAPI()
 
 supported_currencies = ["usd", "ils"]
 
-CURRENCY = os.getenv("CURRENCY", "usd").lower()
+CURRENCY = os.getenv("API_CURRENCY", "usd").lower()
 if CURRENCY not in supported_currencies:
     logger.warning("Non-supported currency, defaulting to USD")
     CURRENCY = "usd"
 
-BASE_URL = os.getenv("BASE_URL", f"https://api.coingecko.com/api/v3/simple/price")
+BASE_URL = os.getenv("API_URL", f"https://api.coingecko.com/api/v3/simple/price")
 
 @app.get("/price")
 def get_crypto_price(crypto: str = Query("bitcoin", description="Cryptocurrency name"),
