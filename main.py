@@ -55,7 +55,7 @@ def get_crypto_price(crypto: str = Query(COIN_TYPE, description="Cryptocurrency 
         logger.error(f"Price not found for '{crypto}'")
         return {"error": f"Price not found for '{crypto}'"}
 
-    increase_request_count(BASE_URL, crypto)
+    increase_successful_request_count(BASE_URL, crypto)
     record_latency(BASE_URL, COIN_TYPE, start)
     logger.info(f"Successfully fetched price for {crypto} from {BASE_URL}")
     return {"crypto": crypto, "price": data[crypto][currency.lower()]}

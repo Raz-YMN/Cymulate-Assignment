@@ -1,9 +1,9 @@
 from prometheus_client import Counter, Histogram
 import time
 
-request_count = Counter(
-    "crypto_price_requests_total",
-    "Total number of requests to /price for a specific coin",
+successful_requests_count = Counter(
+    "crypto_price_successful_requests_total",
+    "Total number of successful requests to /price for a specific coin",
     ["endpoint", "coin_type"]
 )
 
@@ -25,8 +25,8 @@ target_site_request_latency = Histogram(
     ["endpoint", "coin_type"]
 )
 
-def increase_request_count(endpoint: str, coin_type: str):
-    request_count.labels(endpoint=endpoint, coin_type=coin_type).inc()
+def increase_successful_request_count(endpoint: str, coin_type: str):
+    successful_requests_count.labels(endpoint=endpoint, coin_type=coin_type).inc()
 
 def increase_no_price(endpoint: str):
     price_error_count.labels(endpoint=endpoint).inc()
