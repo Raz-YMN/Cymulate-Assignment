@@ -1,0 +1,14 @@
+apiVersion: v2
+name: bitcoin-price
+description: Chart to install crypto-price app and it's observability
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+  - name: kube-prometheus-stack
+    version: 79.5.0
+    repository: https://prometheus-community.github.io/helm-charts
+  - name: karpenter
+    version: "1.8.x"
+    repository: "public.ecr.aws/karpenter/karpenter"
+    condition: karpenter.enabled
