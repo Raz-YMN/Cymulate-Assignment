@@ -184,9 +184,9 @@ env:
     value: bitcoin
   - name: BASE_URL
     value: https://api.coingecko.com/api/v3/simple/price
-  - name: OPENTELEMTRY_HOST
+  - name: OPENTELEMETRY_HOST
     value: http://opentelemetry-collector.default.svc.cluster.local
-  - name: OPENTELEMTRY_PORT
+  - name: OPENTELEMETRY_PORT
     value: "4318"
 
 prometheus:

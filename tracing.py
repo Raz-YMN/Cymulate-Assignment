@@ -9,8 +9,8 @@ import logging
 
 def init_tracing():
     OTEL_COLLECTOR_ENDPOINT =\
-        (f"{os.getenv("OPENTELEMTRY_HOST", "http://opentelemetry-collector.default.svc.cluster.local")}"
-         f":{os.getenv("OPENTELEMTRY_PORT", "4318")}/v1/traces")
+        (f"{os.getenv("OPENTELEMETRY_HOST", "http://opentelemetry-collector.default.svc.cluster.local")}"
+         f":{os.getenv("OPENTELEMETRY_PORT", "4318")}/v1/traces")
     logger = logging.getLogger()
     logger.info(f"Sending telemetry to {OTEL_COLLECTOR_ENDPOINT}")
 

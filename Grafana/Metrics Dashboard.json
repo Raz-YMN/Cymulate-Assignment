@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 29,
   "links": [],
   "panels": [
     {
@@ -88,7 +88,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"crypto_price_successful_requests_total\", coin_type=\"bitcoin\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.31:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-b588p\", service=\"crypto-bitcoin-price\"}"
+                  "{__name__=\"crypto_price_successful_requests_total\", coin_type=\"bitcoin\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.127:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-9646c478-5kkgg\", service=\"crypto-bitcoin-price\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -109,7 +109,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
+        "w": 23,
         "x": 0,
         "y": 0
       },
@@ -143,80 +143,6 @@
       ],
       "title": "Successful requests",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "fillOpacity": 80,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineWidth": 1,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 11,
-        "x": 10,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "rate(endpoint_api_request_latency_seconds_count{coin_type=~\"$coin_type\", exported_endpoint=\"$endpoint\"}[5m])",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Request latency",
-      "type": "histogram"
     },
     {
       "datasource": {
@@ -286,7 +212,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"crypto_price_successful_requests_total\", coin_type=\"bitcoin\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.139:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-nhpgt\", service=\"crypto-bitcoin-price\"}"
+                  "{__name__=\"crypto_price_not_found_error_total\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.127:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-9646c478-5kkgg\", service=\"crypto-bitcoin-price\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -307,7 +233,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
+        "w": 11,
         "x": 0,
         "y": 8
       },
@@ -409,7 +335,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"endpoint_api_error_total\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.31:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-b588p\", service=\"crypto-bitcoin-price\"}"
+                  "{__name__=\"endpoint_api_error_total\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.127:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-9646c478-5kkgg\", service=\"crypto-bitcoin-price\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -430,8 +356,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 10,
+        "w": 12,
+        "x": 11,
         "y": 8
       },
       "id": 3,
@@ -518,5 +444,5 @@
   "timezone": "browser",
   "title": "Crypto Metrics",
   "uid": "adsgfjla",
-  "version": 6
+  "version": 1
 }
