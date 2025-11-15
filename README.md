@@ -99,7 +99,23 @@ Jaeger and Prometheus need no authentication and are available through the menti
 `localhost:8000/health` - displays whether app is healthy
 `localhost:8000/docs` - fastapi docs
 
+## Service Logs
+`2025-11-15 21:44:15,973 - INFO - Sending telemetry to http://opentelemetry-collector.default.svc.cluster.local:4318/v1/traces
+2025-11-15 21:44:16,012 - INFO - Started server process [1]
+2025-11-15 21:44:16,013 - INFO - Waiting for application startup.
+2025-11-15 21:44:16,013 - INFO - Application startup complete.
+2025-11-15 21:44:16,015 - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-11-15 21:45:13,566 - ERROR - Price not found for 'asdasdsa'
+2025-11-15 21:45:14,030 - ERROR - Price not found for 'asdasdsa'
+2025-11-15 21:45:17,714 - INFO - Successfully fetched price for bitcoin from https://api.coingecko.com/api/v3/simple/price
+2025-11-15 21:48:09,568 - INFO - Successfully fetched price for ethereum from https://api.coingecko.com/api/v3/simple/price
+2025-11-15 21:49:29,762 - INFO - Successfully fetched price for ethereum from https://api.coingecko.com/api/v3/simple/price
+2025-11-15 21:49:30,292 - ERROR - Failed to fetch price: 429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=ils
+2025-11-15 21:49:31,210 - ERROR - Failed to fetch price: 429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=ils` \
+Errors come from rate limiting on endpoint
+
 ## Known Limitations
 - Jenkins deploys and a Jenkinsfile exists, but due to most of the stages being reliant on ecr/aws and slack, CI/CD won't run.
 - Some of prometheus' targets (specifically some of it's own services) requires authentication to access /metrics and thus those targets are down.
 - While the app supports change of target endpoint via env variable, most sites probably won't allow a query in the same format as coingecko.
+- Jaeger datasource for the tracing dashboard needs to be created manually due to time constraints
