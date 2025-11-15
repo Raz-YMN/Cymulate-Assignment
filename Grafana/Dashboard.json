@@ -88,7 +88,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"crypto_price_successful_requests_total\", coin_type=\"bitcoin\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.139:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-nhpgt\", service=\"crypto-bitcoin-price\"}"
+                  "{__name__=\"crypto_price_successful_requests_total\", coin_type=\"bitcoin\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.31:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-b588p\", service=\"crypto-bitcoin-price\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -209,7 +209,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (le) (rate(endpoint_api_request_latency_seconds_bucket{coin_type=\"bitcoin\"}[5m]))",
+          "expr": "rate(endpoint_api_request_latency_seconds_count{coin_type=~\"$coin_type\", exported_endpoint=\"$endpoint\"}[5m])",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -409,7 +409,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"endpoint_api_error_total\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.139:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-nhpgt\", service=\"crypto-bitcoin-price\"}"
+                  "{__name__=\"endpoint_api_error_total\", container=\"bitcoin-price\", endpoint=\"http\", exported_endpoint=\"https://api.coingecko.com/api/v3/simple/price\", instance=\"10.244.0.31:8000\", job=\"crypto-bitcoin-price\", namespace=\"test-crypto-price\", pod=\"crypto-bitcoin-price-5d4bdd49db-b588p\", service=\"crypto-bitcoin-price\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -511,12 +511,12 @@
     ]
   },
   "time": {
-    "from": "2025-11-14T08:38:12.661Z",
-    "to": "2025-11-14T20:38:12.661Z"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Crypto Metrics",
-  "uid": "adsgfjl",
-  "version": 27
+  "uid": "adsgfjla",
+  "version": 6
 }
