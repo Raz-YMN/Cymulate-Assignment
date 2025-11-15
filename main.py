@@ -7,9 +7,15 @@ import os
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from logger import init_logger
 from metrics import *
+from opentelemetry import trace
+from tracing import init_tracing
 
+# Logging
 init_logger()
 logger = logging.getLogger()
+
+# Tracing
+tracer = init_tracing()
 
 app = FastAPI()
 
@@ -31,34 +37,55 @@ BASE_URL = os.getenv("API_URL", f"https://api.coingecko.com/api/v3/simple/price"
 @app.get("/price")
 def get_crypto_price(crypto: str = Query(COIN_TYPE, description="Cryptocurrency name"),
                      currency: str = Query(CURRENCY, description="Currency type")):
-    params = {
-    "ids": crypto,
-    "vs_currencies": currency
-    }
-    start = time.time()
-    try:
-        response = requests.get(BASE_URL, params=params)
-        response.raise_for_status()
-        data = response.json()
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Failed to fetch price: {e}")
-        increase_site_api_error(BASE_URL)
-        return {"error": "Failed to fetch price"}
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        increase_site_api_error(BASE_URL)
-        return {"error": "Unexpected error"}
+    with tracer.start_as_current_span("get_crypto_price") as span:
+        span.set_attribute("crypto.type", crypto)
+        span.set_attribute("currency.type", currency)
+        span.set_attribute("target.endpoint", BASE_URL)
+        params = {
+        "ids": crypto,
+        "vs_currencies": currency
+        }
+        start = time.time()
+        try:
+            response = requests.get(BASE_URL, params=params)
+            response.raise_for_status()
+            data = response.json()
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to fetch price: {e}")
 
-    if crypto not in data:
-        increase_no_price(BASE_URL)
+            span.record_exception(e)
+            span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
+            span.set_attribute("error.type", "request_exception")
+
+            increase_site_api_error(BASE_URL)
+            return {"error": "Failed to fetch price"}
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+
+            span.record_exception(e)
+            span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
+            span.set_attribute("error.type", "unexpected")
+
+            increase_site_api_error(BASE_URL)
+            return {"error": "Unexpected error"}
+
+        if crypto not in data:
+            span.set_attribute("error.type", "no_price")
+            span.add_event("No price returned from API")
+
+            increase_no_price(BASE_URL)
+            record_latency(BASE_URL, COIN_TYPE, start)
+            logger.error(f"Price not found for '{crypto}'")
+            return {"error": f"Price not found for '{crypto}'"}
+
+        increase_successful_request_count(BASE_URL, crypto)
         record_latency(BASE_URL, COIN_TYPE, start)
-        logger.error(f"Price not found for '{crypto}'")
-        return {"error": f"Price not found for '{crypto}'"}
+        logger.info(f"Successfully fetched price for {crypto} from {BASE_URL}")
 
-    increase_successful_request_count(BASE_URL, crypto)
-    record_latency(BASE_URL, COIN_TYPE, start)
-    logger.info(f"Successfully fetched price for {crypto} from {BASE_URL}")
-    return {"crypto": crypto, "price": data[crypto][currency.lower()]}
+        span.set_status(trace.status.Status(trace.status.StatusCode.OK))
+        span.add_event("Price fetched successfully")
+
+        return {"crypto": crypto, "price": data[crypto][currency.lower()]}
 
 @app.get("/metrics")
 def metrics():

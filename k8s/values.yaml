@@ -184,6 +184,10 @@ env:
     value: bitcoin
   - name: BASE_URL
     value: https://api.coingecko.com/api/v3/simple/price
+  - name: OPENTELEMTRY_HOST
+    value: http://opentelemetry-collector.default.svc.cluster.local
+  - name: OPENTELEMTRY_PORT
+    value: "4318"
 
 prometheus:
   prometheusSpec:
@@ -196,3 +200,38 @@ karpenter:
     clusterName: crypto-cluster
     # This requires creation of SQS queue for interruptions, aswell as an IAM role for karpenter to use the queue
     interruptionQueue: crypto-cluster
+
+jaeger:
+  fullnameOverride: jaeger
+  provisionDataStore:
+    cassandra: false
+  allInOne:
+    enabled: true
+  storage:
+    type: memory
+  agent:
+    enabled: false
+  collector:
+    enabled: false
+  query:
+    enabled: false
+
+opentelemetry-collector:
+  fullnameOverride: opentelemetry-collector
+  image:
+    repository: otel/opentelemetry-collector
+    tag: latest
+  command:
+    name: otelcol
+  mode: deployment
+  config:
+    exporters:
+      otlp:
+        endpoint: jaeger-collector:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          processors: [memory_limiter, batch]
+          exporters: [otlp, debug]
