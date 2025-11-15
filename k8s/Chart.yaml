@@ -18,4 +18,6 @@ dependencies:
   - name: jaeger
     version: "3.4.1"
     repository: https://jaegertracing.github.io/helm-charts
-    
+  - name: jenkins
+    version: "5.8.110"
+    repository: https://charts.jenkins.io
