@@ -1,7 +1,5 @@
 pipeline {
     stages {
-        agent { label 'kubeval' }
-
         stage('Lint Kubernetes YAMLs') {
             agent { label 'kubeval' }
 
