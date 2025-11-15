@@ -189,3 +189,10 @@ prometheus:
   prometheusSpec:
     serviceMonitorNamespaceSelector:
       any: true
+
+karpenter:
+  enabled: false
+  settings:
+    clusterName: crypto-cluster
+    # This requires creation of SQS queue for interruptions, aswell as an IAM role for karpenter to use the queue
+    interruptionQueue: crypto-cluster
