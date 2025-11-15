@@ -57,11 +57,11 @@ And your chart should now be deploying!
 If running from a local cluster, you can port-forward using a Kubernetes UI like [Lens](https://k8slens.dev/) or using kubectl.
 
 The relevant services and their ports are (assuming installation with release name crypto):\
-crypto-bitcoin-price - 8000\
-crypto-kube-prometheus-sta-prometheus - 9090\
-jaeger-query - 16686\
-crypto-grafana - 3000\
-crypto-jenkins - 8080
+`crypto-bitcoin-price - 8000`\
+`crypto-kube-prometheus-sta-prometheus - 9090`\
+`jaeger-query - 16686`\
+`crypto-grafana - 3000`\
+`crypto-jenkins - 8080`
 
 ## Environment Variables
 There are no required environment variables. Not setting any will use the default values in the chart's `values.yaml`.\
