@@ -235,34 +235,3 @@ opentelemetry-collector:
         traces:
           processors: [memory_limiter, batch]
           exporters: [otlp, debug]
-
-jenkins:
-  controller:
-    JCasC:
-      configScripts:
-        create-mbp: |
-          jenkins:
-            jobs:
-              - script: >
-                  multibranchPipelineJob('Cymulate Project') {
-
-                    branchSources {
-                      git {
-                        id('Cymulate Project')
-                        remote('https://github.com/Raz-YMN/Cymulate-Assignment.git')
-                        includes('*')
-                      }
-                    }
-
-                    factory {
-                      workflowBranchProjectFactory {
-                        scriptPath('Jenkinsfile')
-                      }
-                    }
-
-                    orphanedItemStrategy {
-                      discardOldItems {
-                        numToKeep(20)
-                      }
-                    }
-                  }
