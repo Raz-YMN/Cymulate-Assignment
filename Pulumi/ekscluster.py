@@ -1,7 +1,7 @@
 from pulumi_aws import iam, eks, ec2
 from vpc import Vpc
 
-class EksCluster():
+class EksCluster:
     def __init__(self,
                  name: str,
                  role: iam.Role,
@@ -20,7 +20,7 @@ class EksCluster():
         vpc_config=eks.ClusterVpcConfigArgs(
             public_access_cidrs=["0.0.0.0/0"],
             security_group_ids=[vpc.sg.id],
-            subnet_ids=vpc.subnet_ids,
+            subnet_ids=vpc.private_subnet_ids,
         ))
 
     @property

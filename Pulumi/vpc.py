@@ -1,4 +1,4 @@
-from pulumi_aws import ec2, get_availability_zones
+from pulumi_aws import ec2, get_availability_zones, rds
 
 class Vpc:
     def __init__(self,
@@ -28,53 +28,85 @@ class Vpc:
             }
         )
 
-        self._route_table = ec2.RouteTable(
-            f"{name}-rt",
-            vpc_id=self._vpc.id,
-            routes=[
-                ec2.RouteTableRouteArgs(
-                    cidr_block="0.0.0.0/0",
-                    gateway_id=self._igw.id,
-                )
-            ],
-            tags={
-                "Name": f"{name}-rt",
-                **self._tags
-            }
-        )
+        # NAT for private subnets
+        self._eip = ec2.Eip(f"{name}-nat-eip", vpc=True)
+        self._nat_gateway = None
 
         zones = get_availability_zones()
-        self._subnet_ids = []
+        self._public_subnet_ids = []
+        self._private_subnet_ids = []
 
         for i, zone in enumerate(zones.names):
-            subnet = ec2.Subnet(
-                f"{name}-subnet-{zone}",
+            public_subnet = ec2.Subnet(
+                f"{name}-public-{zone}",
                 vpc_id=self._vpc.id,
-                availability_zone=zone,
                 cidr_block=f"10.100.{i}.0/24",
+                availability_zone=zone,
                 map_public_ip_on_launch=True,
-                assign_ipv6_address_on_creation=False,
-                tags={"Name": f"{name}-{zone}-subnet",
-                      **self._tags
-                      },
+                tags={"Name": f"{name}-public-{zone}", **self._tags},
             )
+            self._public_subnet_ids.append(public_subnet.id)
 
-            # Associate subnet with rt
+            private_subnet = ec2.Subnet(
+                f"{name}-private-{zone}",
+                vpc_id=self._vpc.id,
+                cidr_block=f"10.100.{i + 100}.0/24",
+                availability_zone=zone,
+                map_public_ip_on_launch=False,
+                tags={"Name": f"{name}-private-{zone}", **self._tags},
+            )
+            self._private_subnet_ids.append(private_subnet.id)
+
+        # Create NAT gateway on first public subnet
+        self._nat_gateway = ec2.NatGateway(
+            f"{name}-nat",
+            allocation_id=self._eip.id,
+            subnet_id=self._public_subnet_ids[0],
+            tags={"Name": f"{name}-nat", **self._tags}
+        )
+
+        self._public_rt = ec2.RouteTable(
+            f"{name}-public-rt",
+            vpc_id=self._vpc.id,
+            routes=[ec2.RouteTableRouteArgs(
+                cidr_block="0.0.0.0/0",
+                gateway_id=self._igw.id
+            )],
+            tags={"Name": f"{name}-public-rt", **self._tags}
+        )
+
+        self._private_rt = ec2.RouteTable(
+            f"{name}-private-rt",
+            vpc_id=self._vpc.id,
+            routes=[ec2.RouteTableRouteArgs(
+                cidr_block="0.0.0.0/0",
+                nat_gateway_id=self._nat_gateway.id
+            )],
+            tags={"Name": f"{name}-private-rt", **self._tags}
+        )
+
+        for public_subnet in self._public_subnet_ids:
             ec2.RouteTableAssociation(
-                f"{name}-rta-{zone}",
-                route_table_id=self._route_table.id,
-                subnet_id=subnet.id,
+                f"{name}-public-rta-{public_subnet}",
+                subnet_id=public_subnet,
+                route_table_id=self._public_rt.id
             )
 
-            self._subnet_ids.append(subnet.id)
+        for private_subnet in self._private_subnet_ids:
+            ec2.RouteTableAssociation(
+                f"{name}-private-rta-{private_subnet}",
+                subnet_id=private_subnet,
+                route_table_id=self._private_rt.id
+            )
 
         self._security_group = ec2.SecurityGroup(
             f"{name}-sg",
             vpc_id=self._vpc.id,
             description="Allow all HTTP(s) traffic to EKS Cluster",
-            tags={"Name": f"{name}-eks-sg",
-                  **self._tags
-                  },
+            tags={
+                "Name": f"{name}-eks-sg",
+                **self._tags
+            },
             ingress=[
                 ec2.SecurityGroupIngressArgs(
                     cidr_blocks=["0.0.0.0/0"],
@@ -102,6 +134,12 @@ class Vpc:
             ],
         )
 
+        self._private_subnet_group = rds.SubnetGroup(
+            f"{name}-db-subnets",
+            subnet_ids=self._private_subnet_ids,
+            tags={"Name": f"{name}-db-subnets", **self._tags}
+        )
+
     @property
     def id(self):
         return self._vpc.id
@@ -127,12 +165,24 @@ class Vpc:
         return self._igw
 
     @property
-    def rt(self):
-        return self._route_table
+    def public_rt(self):
+        return self._public_rt
 
     @property
-    def subnet_ids(self):
-        return self._subnet_ids
+    def private_rt(self):
+        return self._private_rt
+
+    @property
+    def private_subnet_group(self):
+        return self._private_subnet_group
+
+    @property
+    def public_subnet_ids(self):
+        return self._public_subnet_ids
+
+    @property
+    def private_subnet_ids(self):
+        return self._private_subnet_ids
 
     @property
     def sg(self):
