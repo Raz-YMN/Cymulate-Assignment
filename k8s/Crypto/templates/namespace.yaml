@@ -5,4 +5,5 @@ metadata:
   name: {{ .Values.namespace.name | default "test-crypto-price"}}
   labels:
     app: {{ .Values.namespace.appLabel | default "crypto-price-app" }}
+    istio-injection: enabled
 {{- end }}

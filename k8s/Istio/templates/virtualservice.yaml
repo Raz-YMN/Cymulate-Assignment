@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: crypto-route
+  namespace: istio-system
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - crypto-gateway
+  http:
+  - route:
+    - destination:
+        host: crypto-service.test-crypto-price.svc.cluster.local
+        port:
+          number: 8000

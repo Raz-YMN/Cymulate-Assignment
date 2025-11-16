@@ -48,7 +48,7 @@ kubectl config use-context mycontext
 
 To install the chart using [helm](https://helm.sh/docs/intro/install/) run from the root of the repository:
 ```commandline
-helm install crypto ./k8s
+helm install crypto ./k8s/Crypto
 ```
 
 And your chart should now be deploying!
@@ -91,6 +91,25 @@ windows (using powershell):
 powershell -Command "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String((kubectl get secret --namespace default crypto-grafana -o jsonpath='{.data.admin-password}')))"
 ```
 Jaeger and Prometheus need no authentication and are available through the mentioned ports.
+
+## Istio Usage
+To install and use Istio's service mesh first install the main crypto app and then cd into `./k8s/Istio` and run:
+```commandline
+helm install istio . -n istio-system --create-namespace
+```
+
+**KNOWN BUG**\
+since the ingress gateway deployment deploys at the same time as istiod, istiod doesn't change the gateway's image in time from
+`auto` to the correct one. This means you may have to delete the gateway deployment and run:
+```commandline
+helm upgrade istio . -n istio-system
+```
+
+After installing, your crypto pod will now have istio's proxy sidecar, and you can access the api through the istio gateway by using it's `80` port.\
+You can do so via Lens or by running:
+```commandline
+kubectl port-forward svc/istio-ingressgateway 8000:80 --namespace istio-system
+```
 
 ## App Endpoints
 `localhost:8000/price` - retrieves the default coin in the default currency (uses env vars values)\
