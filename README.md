@@ -140,4 +140,3 @@ Errors come from rate limiting on endpoint
 - Jenkins deploys and a Jenkinsfile exists, but due to most of the stages being reliant on ecr/aws and slack, CI/CD won't run.
 - Some of prometheus' targets (specifically some of it's own services) requires certificates to access /metrics and thus those targets are down.
 - While the app supports change of target endpoint via env variable, most sites probably won't allow a query in the same format as coingecko.
-- Jaeger datasource for the tracing dashboard needs to be created manually due to time constraints
