@@ -48,6 +48,7 @@ kubectl config use-context mycontext
 
 To install the chart using [helm](https://helm.sh/docs/intro/install/) run from the root of the repository:
 ```commandline
+helm dep up
 helm install crypto ./k8s/Crypto
 ```
 
@@ -81,7 +82,7 @@ env:
 ```
 
 ## Authentication
-Grafana generates a new admin password every time it's deployed. The password can be retrieved using:
+Grafana and Jenkins generate a new admin password every time they're deployed. Username is `admin` and the password can be retrieved using:\
 linux:
 ```commandline
 kubectl get secret --namespace default crypto-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
@@ -90,11 +91,13 @@ windows (using powershell):
 ```commandline
 powershell -Command "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String((kubectl get secret --namespace default crypto-grafana -o jsonpath='{.data.admin-password}')))"
 ```
+Swap `crypto-grafana` with `crypto-jenkins` and `data.admin-password` with `data.jenkins-admin-password` for Jenkins\
 Jaeger and Prometheus need no authentication and are available through the mentioned ports.
 
 ## Istio Usage
 To install and use Istio's service mesh first install the main crypto app and then cd into `./k8s/Istio` and run:
 ```commandline
+help dep up
 helm install istio . -n istio-system --create-namespace
 ```
 
