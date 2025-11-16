@@ -48,6 +48,7 @@ kubectl config use-context mycontext
 
 To install the chart using [helm](https://helm.sh/docs/intro/install/) run from the root of the repository:
 ```commandline
+helm dep up
 helm install crypto ./k8s/Crypto
 ```
 
@@ -95,6 +96,7 @@ Jaeger and Prometheus need no authentication and are available through the menti
 ## Istio Usage
 To install and use Istio's service mesh first install the main crypto app and then cd into `./k8s/Istio` and run:
 ```commandline
+help dep up
 helm install istio . -n istio-system --create-namespace
 ```
 
