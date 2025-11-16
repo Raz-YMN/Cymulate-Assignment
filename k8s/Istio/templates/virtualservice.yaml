@@ -2,8 +2,6 @@ apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: crypto-route
-  annotations:
-    "helm.sh/hook": "post-install"
   namespace: istio-system
 spec:
   hosts:

@@ -102,7 +102,7 @@ helm install istio . -n istio-system --create-namespace
 since the ingress gateway deployment deploys at the same time as istiod, istiod doesn't change the gateway's image in time from
 `auto` to the correct one. This means you may have to delete the gateway deployment and run:
 ```commandline
-helm upgrade istio . -n istio-system --create-namespace
+helm upgrade istio . -n istio-system
 ```
 
 After installing, your crypto pod will now have istio's proxy sidecar, and you can access the api through the istio gateway by using it's `80` port.\
