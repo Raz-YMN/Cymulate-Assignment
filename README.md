@@ -81,7 +81,7 @@ env:
 ```
 
 ## Authentication
-Grafana generates a new admin password every time it's deployed. The password can be retrieved using:
+Grafana generates a new admin password every time it's deployed. The password can be retrieved using:\
 linux:
 ```commandline
 kubectl get secret --namespace default crypto-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
