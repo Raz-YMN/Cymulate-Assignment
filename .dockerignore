@@ -1,0 +1,8 @@
+Grafana/
+Pulumi/
+Screenshots/
+k8s/
+.git/
+.gitignore
+Jenkinsfile
+README.md
