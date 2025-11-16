@@ -82,7 +82,7 @@ env:
 ```
 
 ## Authentication
-Grafana generates a new admin password every time it's deployed. The password can be retrieved using:\
+Grafana and Jenkins generate a new admin password every time they're deployed. Username is `admin` and the password can be retrieved using:\
 linux:
 ```commandline
 kubectl get secret --namespace default crypto-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
@@ -91,6 +91,7 @@ windows (using powershell):
 ```commandline
 powershell -Command "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String((kubectl get secret --namespace default crypto-grafana -o jsonpath='{.data.admin-password}')))"
 ```
+Swap `crypto-grafana` with `crypto-jenkins` and `data.admin-password` with `data.jenkins-admin-password` for Jenkins\
 Jaeger and Prometheus need no authentication and are available through the mentioned ports.
 
 ## Istio Usage
