@@ -1,0 +1,10 @@
+istio:
+  enabled: true
+  namespace:
+    create: true
+
+istio-gateway:
+  name: istio-ingressgateway
+
+namespace:
+  create: true

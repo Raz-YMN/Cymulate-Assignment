@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "bitcoin-price.fullname" . }}
+  name: crypto-service
   namespace: {{ .Values.namespace.name }}
   labels:
     {{- include "bitcoin-price.labels" . | nindent 4 }}
