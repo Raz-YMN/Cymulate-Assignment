@@ -18,7 +18,7 @@ If you want to deploy the application locally without a cluster and without all 
 repositories root:
 
 ```commandline
-docker build -t Crypto .
+docker build -t crypto-price .
 docker run -p 8000:8000 crypto-price
 ```
 
